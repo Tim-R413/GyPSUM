@@ -42,7 +42,7 @@ class HyperCube:
 
     """
 
-    def __init__(self, img_path, mask_path=None):
+    def __init__(self, img_path, hdr_path,mask_path=None):
         fp = envi.open(hdr_path, img_path)
 
         self.cube = np.array(fp.load())
