@@ -16,7 +16,7 @@ def main(argv):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     start = time.time()
-    cube = HyperCube('/content/GyPSUM/P204_2_100T.tif', '/content/GyPSUM/P204_2_100T.hdr')
+    cube = HyperCube(img_path= '/content/GyPSUM/P204_2_100T.tif', hdr_path= '/content/GyPSUM/P204_2_100T.hdr')
 
     cube.unmask_value(65535)
     cube.clip()
