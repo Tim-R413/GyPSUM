@@ -16,11 +16,11 @@ def main(argv):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     start = time.time()
-    cube = HyperCube('hrl000040ff_07_if183j_mtr3.hdr')
+    cube = HyperCube('')
 
     cube.unmask_value(65535)
     cube.clip()
-    cube.ratio('40ffratiospec.npy')
+    #cube.ratio('40ffratiospec.npy')
     cube.spectral_subset(1050, 2550)
     # cube.hysime()
     cube.normalize()
