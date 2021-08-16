@@ -13,6 +13,8 @@ import tensorflow as tf
 from tensorflow.keras import layers, losses
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.models import Model
+import spectral.io.envi as envi
+
 
 
 class HyperCube:
@@ -41,7 +43,7 @@ class HyperCube:
     """
 
     def __init__(self, img_path, mask_path=None):
-        fp = spy.open_image(img_path)
+        fp = envi.open(hdr_path, img_path)
 
         self.cube = np.array(fp.load())
         self.bands = np.array(fp.bands.centers)
