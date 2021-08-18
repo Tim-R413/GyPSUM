@@ -85,20 +85,20 @@ class HyperCube:
         value : float
             Value to unmask.
 
-        """
-        hgt=self.mask
-        wid=self.mask
-        for i in range(cube.shape[0]):
-          for j in range(cube.shape[1]):
-            if np.sum(cube[i,j,:])>0:
-              #if count <50:
-                #print('sum for this pixels bands:',np.sum(cube[i,j,:]))
-              good_pix.append(cube[i,j,:])
-              count+=1
-
-
-        #self.mask &= np.logical_not(
+            #self.mask &= np.logical_not(
             #np.all(np.isclose(self.cube, value), axis=-1))
+
+        """
+        hgt=self.mask.shape[0]
+        wid=self.mask.shape[1]
+
+        for i in range(hgt):
+          for j in range(wid):
+            if np.sum(self.cube[i,j,:])==value:
+              self.mask[i,j]=False
+
+
+        
 ###########
     def clip(self, min=0, max=1):
         """ Clips `cube` values to range [`min`, `max`].
