@@ -16,6 +16,7 @@ from tensorflow.keras.losses import Loss
 from tensorflow.keras.models import Model
 import spectral.io.envi as envi
 from numpy.linalg import norm
+import matplotlib.pyplot as plt
 
 
 
@@ -93,11 +94,12 @@ class HyperCube:
         """
         hgt=self.mask.shape[0]
         wid=self.mask.shape[1]
-
+        #highlight locations in mask where there is BG in the cube 
         for i in range(hgt):
           for j in range(wid):
             if np.sum(self.cube[i,j,:])==value:
               self.mask[i,j]=False
+        
 
 
         
@@ -135,18 +137,41 @@ class HyperCube:
 #######
     def normalize(self):
         """ Divide `cube` by per-pixel l2-norm. 
+
+        ###big CHANGE: vectorize the cube in to array of pixels and bands 
+                      apply L2 norm across each pixel 
+                      vectorize the mask array into 1D array of bool val 
+                      optional: filter pixels based on mask element that is set to False
         #self.cube /= scipy.linalg.norm(self.cube, axis=-1)[..., np.newaxis]
         """
+        orig= self.cube.shape
+        
         hgt=self.cube.shape[0]
         wid=self.cube.shape[1]
-        
+      
+        self.cube = np.nan_to_num(self.cube)
+        self.cube=self.cube.reshape((hgt*wid),self.cube.shape[2])
+        #self.mask = self.mask.reshape((hgt*wid))
+        #print('mask shape',(self.mask.shape))
 
-        for i in range(hgt):
-          for j in range(wid):
-            self.cube[i,j,:] = self.cube[i,j,:]/norm(self.cube[i,j,:])
-        return print('height:', hgt, "width:", wid)
+        count=0
+        np.seterr(divide='ignore', invalid='ignore')
+        for pixel in self.cube:
+          self.cube[count,:]= pixel/norm(pixel)
+          count=+1
+        print(np.min(self.cube),np.max(self.cube))
+        self.cube=self.cube.reshape(orig)
 
-        
+
+    def display_img(self, red=122, green=68, blue=34):
+      r = self.cube[:,:,red]
+      g = self.cube[:,:,green]
+      b= self.cube[:,:,blue]
+      rgb2 = np.dstack((r,g,b))
+
+      rgb2_norm = (rgb2*255/(np.max(rgb2))).astype(np.uint8)
+      plt.imshow(rgb2_norm)
+
 
     # spy.remove_continuum outputs float64 so `out` is not used
     def remove_continuum(self):
