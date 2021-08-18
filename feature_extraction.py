@@ -55,9 +55,11 @@ class HyperCube:
 
         self.n_components = None
         self.emb = None
-
+#######
     def spectral_subset(self, band_min=-np.inf, band_max=np.inf):
+        
         """ Trims `cube` and `bands` to spectral range. 
+        not needed if all band wavelengths are to be used in analysis
 
         Parameters
         ----------
@@ -72,9 +74,11 @@ class HyperCube:
 
         self.cube = self.cube[..., valid_bands]
         self.bands = self.bands[valid_bands]
-
-    def unmask_value(self, value):
+##########
+    def unmask_value(self, value=0):
         """ Removes pixels in `mask` where all values in `cube` equal `value`.
+        
+        changed to take 
 
         Parameters
         ----------
@@ -82,10 +86,20 @@ class HyperCube:
             Value to unmask.
 
         """
+        hgt=self.mask
+        wid=self.mask
+        for i in range(cube.shape[0]):
+          for j in range(cube.shape[1]):
+            if np.sum(cube[i,j,:])>0:
+              #if count <50:
+                #print('sum for this pixels bands:',np.sum(cube[i,j,:]))
+              good_pix.append(cube[i,j,:])
+              count+=1
 
-        self.mask &= np.logical_not(
-            np.all(np.isclose(self.cube, value), axis=-1))
 
+        #self.mask &= np.logical_not(
+            #np.all(np.isclose(self.cube, value), axis=-1))
+###########
     def clip(self, min=0, max=1):
         """ Clips `cube` values to range [`min`, `max`].
 
@@ -99,9 +113,13 @@ class HyperCube:
         """
 
         np.clip(self.cube, min, max, out=self.cube)
-
+#####
     def ratio(self, ratio_path):
         """ Divide `cube` by ratio.
+
+        only needed in unique datasets where: We optionally manually 
+        develop a ratio spectrum from a mean of many bland pixels
+         for each image and divide it out of every pixel of the image.
 
         Parameters
         ----------
@@ -112,7 +130,7 @@ class HyperCube:
         """
 
         self.cube /= self.load_file(ratio_path)
-
+#######
     def normalize(self):
         """ Divide `cube` by per-pixel l2-norm.
         """
