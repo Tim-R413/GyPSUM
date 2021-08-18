@@ -4,7 +4,8 @@ Various methods to process hyperspectral images to prepare for clustering analys
 
 import numpy as np
 import os
-from pysptools.material_count import HySime
+#from pysptools.material_count import HySime
+import pysptools.material_count as cnt
 import scipy.linalg
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
@@ -164,8 +165,11 @@ class HyperCube:
         https://pysptools.sourceforge.io/material_count.html#hyperspectral-signal-subspace-identification-by-minimum-error-hysime
 
         """
+        hy = cnt.HySime()
+        kf = hy.count(self.cube)[0]
+        self.n_components = kf
 
-        self.n_components = HySime().count(self.cube)[0]
+        #self.n_components = HySime().count(self.cube)[0]
 
     def set_n_components(self, n_components):
         """ See `n_components` in HyperCube#Attributes.
