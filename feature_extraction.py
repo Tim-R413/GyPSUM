@@ -45,11 +45,11 @@ class HyperCube:
 
     """
 
-    def __init__(self, img_path, hdr_path,mask_path=None):
+    def __init__(self, img_path, hdr_path,band_wv,mask_path=None):
         fp = envi.open(hdr_path, img_path)
 
         self.cube = np.array(fp.load())
-        self.bands = np.array(fp.bands.centers)
+        self.bands = np.load(band_wv) #np.array(fp.bands.centers)
 
         if mask_path is not None:
             self.mask = np.squeeze(self.load_file(mask_path)).astype(np.bool)
@@ -153,14 +153,21 @@ class HyperCube:
         self.cube=self.cube.reshape((hgt*wid),self.cube.shape[2])
         #self.mask = self.mask.reshape((hgt*wid))
         #print('mask shape',(self.mask.shape))
+        #print(self.cube.shape)
 
-        count=0
         np.seterr(divide='ignore', invalid='ignore')
+
+        number=0
         for pixel in self.cube:
-          self.cube[count,:]= pixel/norm(pixel)
-          count=+1
-        print(np.min(self.cube),np.max(self.cube))
+          self.cube[number,:]= pixel/norm(pixel)
+          number+=1
+
+        self.cube = np.nan_to_num(self.cube) # may end up dividing by 0 to produce nan-> 
+                                          #this sets nan to 0 
+        #print(np.min(self.cube),np.max(self.cube))
+        #print(np.unique(self.cube).shape)
         self.cube=self.cube.reshape(orig)
+        
 
 
     def display_img(self, red=122, green=68, blue=34):
