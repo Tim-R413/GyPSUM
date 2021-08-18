@@ -15,6 +15,7 @@ from tensorflow.keras import layers, losses
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.models import Model
 import spectral.io.envi as envi
+from numpy.linalg import norm
 
 
 
@@ -133,10 +134,19 @@ class HyperCube:
         self.cube /= self.load_file(ratio_path)
 #######
     def normalize(self):
-        """ Divide `cube` by per-pixel l2-norm.
+        """ Divide `cube` by per-pixel l2-norm. 
+        #self.cube /= scipy.linalg.norm(self.cube, axis=-1)[..., np.newaxis]
         """
+        hgt=self.cube.shape[0]
+        wid=self.cube.shape[1]
+        
 
-        self.cube /= scipy.linalg.norm(self.cube, axis=-1)[..., np.newaxis]
+        for i in range(hgt):
+          for j in range(wid):
+            self.cube[i,j,:] = self.cube[i,j,:]/norm(self.cube[i,j,:])
+        return print('height:', hgt, "width:", wid)
+
+        
 
     # spy.remove_continuum outputs float64 so `out` is not used
     def remove_continuum(self):
@@ -166,7 +176,7 @@ class HyperCube:
 
         """
         hy = cnt.HySime()
-        kf = hy.count(self.cube)[0]
+        kf ,EF = hy.count(self.cube)
         self.n_components = kf
 
         #self.n_components = HySime().count(self.cube)[0]
