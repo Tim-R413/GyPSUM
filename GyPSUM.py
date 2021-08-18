@@ -15,10 +15,11 @@ def main(argv):
     # Removes TensorFlow debugging output
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-    start = time.time()
-    cube = HyperCube(img_path= '/content/GyPSUM/P204_2_100T.tif', hdr_path= '/content/GyPSUM/P204_2_100T.hdr')
-
-    cube.unmask_value(65535)
+    start = time.time(), 
+    cube = HyperCube(img_path= '/content/P414_1_100B.dat', hdr_path= '/content/P414_1_100B.hdr')
+    
+  
+    cube.unmask_value()
     cube.clip()
     #cube.ratio('40ffratiospec.npy')
     #cube.spectral_subset(1050, 2550)
@@ -26,7 +27,8 @@ def main(argv):
     cube.normalize()
     # cube.remove_continuum()
     cube.standardize()
-    cube.set_n_components(20)
+    #cube.set_n_components(20)
+
     cube.hysime()
     cube.autoencoder(epochs=3)
     # cube.pca()
