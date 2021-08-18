@@ -169,17 +169,6 @@ class HyperCube:
         self.cube=self.cube.reshape(orig)
         
 
-
-    def display_img(self, red=122, green=68, blue=34):
-      r = self.cube[:,:,red]
-      g = self.cube[:,:,green]
-      b= self.cube[:,:,blue]
-      rgb2 = np.dstack((r,g,b))
-
-      rgb2_norm = (rgb2*255/(np.max(rgb2))).astype(np.uint8)
-      plt.imshow(rgb2_norm)
-
-
     # spy.remove_continuum outputs float64 so `out` is not used
     def remove_continuum(self):
         """ Remove continuum from `cube`.
