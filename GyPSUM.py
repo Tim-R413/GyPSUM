@@ -21,12 +21,13 @@ def main(argv):
     cube.unmask_value(65535)
     cube.clip()
     #cube.ratio('40ffratiospec.npy')
-    cube.spectral_subset(1050, 2550)
-    # cube.hysime()
+    #cube.spectral_subset(1050, 2550)
+    
     cube.normalize()
     # cube.remove_continuum()
     cube.standardize()
     cube.set_n_components(20)
+    cube.hysime()
     cube.autoencoder(epochs=3)
     # cube.pca()
 
