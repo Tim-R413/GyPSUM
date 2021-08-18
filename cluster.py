@@ -133,7 +133,7 @@ class Cluster:
 
         clus = self.clus
         if color:
-            colors = ['#000000'] + distinctipy.get_colors(1+np.max(self.clus))
+            colors = ['#000000'] + distinctipy.get_colors(2+np.max(self.clus))
             clus = mpl.colors.ListedColormap(colors)(self.clus+1)
 
         if os.path.splitext(file_path)[1] == '.npy':
