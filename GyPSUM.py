@@ -37,17 +37,18 @@ def main(argv):
 
     clus = Cluster(cube)
     # clus.k_means(5)
-    clus.gaussian_mixture(15)
+    clus.gaussian_mixture(5)
     # clus.hierarchical_gaussian_mixture(4)
     # clus.combine_spectrally_similar(15)
 
     end = time.time()
-    print(f'The pipeline took {end-start} seconds to complete.')
+   
+    print('The pipeline took', end-start[0], 'seconds to complete.')
 
-    cube.save_cube('cube.hdr')
-    cube.save_mask('mask.hdr')
-    cube.save_emb('emb.hdr')
-    clus.save_clustering('clustering.hdr', color=True)
+    cube.save_cube('cube.npy')
+    cube.save_mask('mask.npy')
+    cube.save_emb('emb.npy')
+    clus.save_clustering('clustering.npy', color=True)
 
 
 if __name__ == '__main__':
