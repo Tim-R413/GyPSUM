@@ -49,6 +49,7 @@ class HyperCube:
         fp = envi.open(hdr_path, img_path)
 
         self.cube = np.array(fp.load())
+        
         self.bands = np.load(band_wv) #np.array(fp.bands.centers)
 
         if mask_path is not None:
@@ -97,8 +98,9 @@ class HyperCube:
         #highlight locations in mask where there is BG in the cube 
         for i in range(hgt):
           for j in range(wid):
-            if np.sum(self.cube[i,j,:])==value:
+            if np.sum(self.cube[i,j,:])<=0:
               self.mask[i,j]=False
+        print(np.unique(self.mask))
         
 
 
