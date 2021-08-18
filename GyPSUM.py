@@ -16,15 +16,17 @@ def main(argv):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     start = time.time(), 
-    cube = HyperCube(img_path= '/content/P414_1_100B.dat', hdr_path= '/content/P414_1_100B.hdr')
+    cube = HyperCube(img_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.dat', hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='')
     
   
     cube.unmask_value()
+    
     cube.clip()
     #cube.ratio('40ffratiospec.npy')
     #cube.spectral_subset(1050, 2550)
     
     cube.normalize()
+    #cube.display_img()
     # cube.remove_continuum()
     cube.standardize()
     #cube.set_n_components(20)
