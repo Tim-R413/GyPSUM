@@ -15,10 +15,16 @@ import numpy as np
 def main(argv):
     # Removes TensorFlow debugging output
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    npy_20_img='/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy'
+    envi_img_ex = '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.dat'
+
+
+
 
     start = time.time(), 
-    cube = HyperCube(img_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.dat', hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy')
+    cube = HyperCube(img_path= '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy' , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
     
+
     print('check first pixel',np.sum(cube.cube[0,0]))
     cube.unmask_value()
     
@@ -39,13 +45,14 @@ def main(argv):
     # cube.pca()
 
     
-    number_clusters= cube.n_components
-    print('number of clusters to produce will be:',number_clusters )
+    number_clusters= 5
+    print('number of components found:',cube.n_components)
+    print('number of clusters to produce will be:', number_clusters)
     
     print('check first pixel before clustering',np.sum(cube.cube[0,0]))
     clus = Cluster(cube)
     # clus.k_means(5)
-    clus.gaussian_mixture(6)#number_clusters)
+    clus.gaussian_mixture(number_clusters)
     # clus.hierarchical_gaussian_mixture(4)
     #clus.combine_spectrally_similar(6)
     print(np.unique(clus.clus))
@@ -58,7 +65,8 @@ def main(argv):
     cube.save_cube('cube.npy')
     cube.save_mask('mask.npy')
     cube.save_emb('emb.npy')
-    clus.save_clustering('clustering.npy', color=True)
+    clus.save_clustering('clustering_img.npy', color=True)
+    np.save('clustering_arr',clus.clus )
 
 
 if __name__ == '__main__':
