@@ -45,10 +45,16 @@ class HyperCube:
 
     """
 
-    def __init__(self, img_path, hdr_path,band_wv,mask_path=None):
-        fp = envi.open(hdr_path, img_path)
+    def __init__(self, img_path, hdr_path,band_wv,img_type,mask_path=None):
+        if img_type=="envi":
+          fp = envi.open(hdr_path, img_path)
+          fp_arr = np.array(fp.load())
+        elif img_type=='npy':
+          fp_arr = np.load(img_path)
+        else:
+          print("image input type not expressed in 'img_type'")
 
-        self.cube = np.array(fp.load())
+        self.cube = fp_arr
         
         self.bands = np.load(band_wv) #np.array(fp.bands.centers)
 
