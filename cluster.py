@@ -96,27 +96,39 @@ class Cluster:
 
         """
 
-        angs = Cluster.get_angs(self.clus, self.cube.cube)
+        
         X = self.cube.cube[self.cube.mask]
         clus = self.clus[self.cube.mask]
+        orig_num_clus= len(np.unique(clus))
+        angs = Cluster.get_angs(self.clus, self.cube.cube, orig_num_clus)
 
-        while len(np.unique(clus)) > n_clusters:
-            new, old = np.unravel_index(np.argmin(angs), angs.shape)
+        
+        new_angs=angs
 
-            clus[clus == old] = new
-            angs[old] = np.pi
-            angs[:, old] = np.pi
+        #####################################33
+        cnt = 0
+        while (len(np.unique(clus))) > n_clusters:        
 
-            u = np.mean(X[clus == new], axis=0)
-            for i in range(len(angs)):
-                v = np.mean(X[clus == i], axis=0)
-                ang = Cluster.get_ang(u, v)
+          print("reduction number ",cnt,'...')
+          
+          new, old = np.unravel_index(np.argmin(new_angs), new_angs.shape)
+          print("combining cluster",old , "into cluster ", new)
+          
 
-                if angs[new, i] < np.pi:
-                    angs[new, i] = ang
-                elif angs[i, new] < np.pi:
-                    angs[i, new] = ang
+          clus[clus == old] = new
+          print("new cluster labels", np.unique(clus))
+
+          new_angs=Cluster.get_angs(clus, X,orig_num_clus)
+          #print("new angle matrix after reduction:, ",new_angs)
+          cnt+=1
+
+        print("reduction loop is done, the remaining clusters are:", np.unique(clus) )
+        print("the number of reduced clusters is, " ,
+              len(np.unique(clus)),"and should equal, ", n_clusters )
+
         self.clus[self.cube.mask] = clus
+        #######################################3333
+
 
     def save_clustering(self, file_path, color=False):
         """ Save clustering image to `file_path`.
@@ -160,14 +172,18 @@ class Cluster:
             Angle between `u` and `v`.
 
         """
+        param1=scipy.linalg.norm(u)
+        param2=scipy.linalg.norm(v)
+        ans=np.arccos(np.dot(u, v)/(1e-8+param1*param2))
 
-        return np.arccos(np.dot(u, v)/(1e-8+scipy.linalg.norm(u)*scipy.linalg.norm(v)))
 
+        return ans
     # Requires clus with classes 0...n
     @staticmethod
-    def get_angs(clus, X):
+    def get_angs(clus, X, orig_n_clus):
         """ Computes lower triangular matrix of spectral angle between every
         pairing of clusters. 
+        *** should this be the upper triangular matrix?**
 
         Parameters
         ----------
@@ -184,16 +200,42 @@ class Cluster:
 
         """
 
-        n_clusters = np.max(clus)+1
-        means = np.array([np.mean(X[clus == i], axis=0)
-                         for i in np.arange(n_clusters)])
+        #n_clusters = np.max(clus)+1
+        n_clusters = orig_n_clus
+        all_clusters=np.unique(clus)[1:]
+        print(all_clusters)
+        means=[]
 
+        
+        for i in all_clusters:
+          means_ele = np.array(np.mean(X[clus == i], axis=0))
+          means.append(means_ele)
+          
+        means=np.array(means)
         angs = np.full((n_clusters, n_clusters), np.pi, dtype=np.float64)
+        #print("means is ", means.shape)
+        #print("exaample means[i]", means[0], "and means[j] ", means[0])
 
-        for i in range(n_clusters):
+        if n_clusters==len(all_clusters):
+          for i in range(n_clusters):
+              u = means[i]
+              for j in range(i):
+                  v = means[j]
+                  #print("u input to get_ang is ",u.shape)
+                  #print("v input to get_ang is ",v.shape)
+                  
+                  angs[j, i] = Cluster.get_ang(u, v)
+        else:
+          for i in range(len(all_clusters)):# [1,2,4,5] [0,1,2,3,4,5]
             u = means[i]
             for j in range(i):
-                v = means[j]
-                angs[j, i] = Cluster.get_ang(u, v)
+              v=means[j]
+              #print([j])
+              #print([i])
+              #print()
+              
+              angs[int(all_clusters[j]),int(all_clusters[i])]= Cluster.get_ang(u,v)
+
+
 
         return angs
