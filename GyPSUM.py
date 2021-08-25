@@ -24,10 +24,10 @@ def main(argv):
 
 
     start = time.time(), 
-    cube = HyperCube(img_path= '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/combined_arrays/all_images.npy' , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
+    cube = HyperCube(img_path= '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy' , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
     
 
-    print('check first pixel',np.sum(cube.cube[0,0]))
+    print('checking first pixel:',np.sum(cube.cube[0,0]))
     cube.unmask_value()
     
     cube.clip()
@@ -40,7 +40,7 @@ def main(argv):
     cube.standardize()
     #cube.set_n_components(6)
 
-    print('check first pixel before feature extraction',np.sum(cube.cube[0,0]))
+    print('checking first pixel before feature extraction:',np.sum(cube.cube[0,0]))
     cube.hysime()
     cube.autoencoder(epochs=3)
     #print(cube.cube.shape)
@@ -54,11 +54,13 @@ def main(argv):
     print('check first pixel before clustering',np.sum(cube.cube[0,0]))
     clus = Cluster(cube)
     # clus.k_means(5)
-    clus.gaussian_mixture(number_clusters)
+    clus.gaussian_mixture(2*cube.n_components)
     # clus.hierarchical_gaussian_mixture(4)
-    #clus.combine_spectrally_similar(6)
-    print(np.unique(clus.clus))
-    print(np.max(clus.clus))
+    clus.combine_spectrally_similar(number_clusters)
+
+
+    print("final list of unique cluster names",np.unique(clus.clus))
+    
 
     end = time.time()
    
