@@ -24,7 +24,7 @@ def main(argv):
 
 
     start = time.time(), 
-    cube = HyperCube(img_path= '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy' , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
+    cube = HyperCube(img_path= npy_86_img , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
     
 
     print('checking first pixel:',np.sum(cube.cube[0,0]))
@@ -49,7 +49,8 @@ def main(argv):
     
     number_clusters= 5
     print('number of components found:',cube.n_components)
-    print('number of clusters to produce will be:', number_clusters)
+    print('number of clusters to produce will be:', 2*cube.n_components)
+    print('number of clusters will be reduced to ', number_clusters)
     
     print('check first pixel before clustering',np.sum(cube.cube[0,0]))
     clus = Cluster(cube)
