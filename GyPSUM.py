@@ -17,12 +17,14 @@ def main(argv):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     npy_20_img='/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy'
     envi_img_ex = '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.dat'
+    npy_86_img='/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/combined_arrays/all_images.npy'
+
 
 
 
 
     start = time.time(), 
-    cube = HyperCube(img_path= '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy' , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
+    cube = HyperCube(img_path= '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/combined_arrays/all_images.npy' , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
     
 
     print('check first pixel',np.sum(cube.cube[0,0]))
