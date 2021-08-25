@@ -117,6 +117,7 @@ class Cluster:
 
           clus[clus == old] = new
           print("new cluster labels", np.unique(clus))
+          print()
 
           new_angs=Cluster.get_angs(clus, X,orig_num_clus)
           #print("new angle matrix after reduction:, ",new_angs)
@@ -203,7 +204,7 @@ class Cluster:
         #n_clusters = np.max(clus)+1
         n_clusters = orig_n_clus
         all_clusters=np.unique(clus)[1:]
-        print(all_clusters)
+        #print(all_clusters)
         means=[]
 
         
