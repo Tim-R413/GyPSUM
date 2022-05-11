@@ -18,13 +18,18 @@ def main(argv):
     npy_20_img='/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/soil_mask_dataset/combinedSM_raster_20ran.npy'
     envi_img_ex = '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.dat'
     npy_86_img='/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/combined_arrays/all_images.npy'
+    npy_mono_img = '/content/drive/MyDrive/Covercrop_segmentation/CC_datasets/hyperspec/combined_arrays/Clusted_arrays/LINKED_monoculture_32.npy'
 
 
 
 
 
     start = time.time(), 
-    cube = HyperCube(img_path= npy_86_img , hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',band_wv='/content/GyPSUM/Band_wavelengths.npy', img_type='npy')
+    cube = HyperCube(
+            img_path= npy_mono_img , 
+            hdr_path= '/content/GyPSUM/ENVI_images/P306_1_1B4C1T4V.hdr',
+            band_wv='/content/GyPSUM/Band_wavelengths.npy', 
+            img_type='npy')
     
 
     print('checking first pixel:',np.sum(cube.cube[0,0]))
@@ -47,16 +52,16 @@ def main(argv):
     # cube.pca()
 
     
-    number_clusters= 5
+    number_clusters= 2
     print('number of components found:',cube.n_components)
     print('number of clusters to produce will be:', 2*cube.n_components)
     print('number of clusters will be reduced to ', number_clusters)
     
     print('check first pixel before clustering',np.sum(cube.cube[0,0]))
     clus = Cluster(cube)
-    # clus.k_means(5)
-    clus.gaussian_mixture(2*cube.n_components)
-    # clus.hierarchical_gaussian_mixture(4)
+    clus.k_means(number_clusters)
+    #clus.gaussian_mixture(2*cube.n_components)
+    #clus.hierarchical_gaussian_mixture(4)
     clus.combine_spectrally_similar(number_clusters)
 
 
